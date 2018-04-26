@@ -1,0 +1,36 @@
+﻿Build started 17/08/2016 14:41:01.
+     1>Project "\\vmwfil01\homedrives23$\p513692\Visual Studio 2013\Projects\Shaders\E01_ColourShader\E01_ColourShader.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"\\vmwfil01\homedrives23$\p513692\Visual Studio 2013\Projects\Shaders\Release\E01_ColourShader.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"\\vmwfil01\homedrives23$\p513692\Visual Studio 2013\Projects\Shaders\Release\E01_ColourShader.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"\\vmwfil01\homedrives23$\p513692\Visual Studio 2013\Projects\Shaders\Release\E01_ColourShader.lib" /MACHINE:X86 /SAFESEH Release\App1.obj
+         Release\ColourShader.obj
+         Release\Main.obj
+     1>App1.obj : error LNK2001: unresolved external symbol "public: __thiscall TriangleMesh::~TriangleMesh(void)" (??1TriangleMesh@@QAE@XZ)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: __thiscall TriangleMesh::TriangleMesh(struct ID3D11Device *,struct ID3D11DeviceContext *,wchar_t *)" (??0TriangleMesh@@QAE@PAUID3D11Device@@PAUID3D11DeviceContext@@PA_W@Z)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: int __thiscall BaseMesh::GetIndexCount(void)" (?GetIndexCount@BaseMesh@@QAEHXZ)
+     1>App1.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall BaseApplication::HandleInput(float)" (?HandleInput@BaseApplication@@MAEXM@Z)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: virtual bool __thiscall BaseApplication::Frame(void)" (?Frame@BaseApplication@@UAE_NXZ)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall BaseApplication::init(struct HINSTANCE__ *,struct HWND__ *,int,int,class Input *)" (?init@BaseApplication@@UAEXPAUHINSTANCE__@@PAUHWND__@@HHPAVInput@@@Z)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: __thiscall BaseApplication::~BaseApplication(void)" (??1BaseApplication@@QAE@XZ)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: __thiscall BaseApplication::BaseApplication(void)" (??0BaseApplication@@QAE@XZ)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: void __thiscall D3D::GetWorldMatrix(struct DirectX::XMMATRIX &)" (?GetWorldMatrix@D3D@@QAEXAAUXMMATRIX@DirectX@@@Z)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: void __thiscall D3D::GetProjectionMatrix(struct DirectX::XMMATRIX &)" (?GetProjectionMatrix@D3D@@QAEXAAUXMMATRIX@DirectX@@@Z)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: struct ID3D11DeviceContext * __thiscall D3D::GetDeviceContext(void)" (?GetDeviceContext@D3D@@QAEPAUID3D11DeviceContext@@XZ)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: struct ID3D11Device * __thiscall D3D::GetDevice(void)" (?GetDevice@D3D@@QAEPAUID3D11Device@@XZ)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: void __thiscall D3D::EndScene(void)" (?EndScene@D3D@@QAEXXZ)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: void __thiscall D3D::BeginScene(float,float,float,float)" (?BeginScene@D3D@@QAEXMMMM@Z)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: void __thiscall Camera::GetViewMatrix(struct DirectX::XMMATRIX &)" (?GetViewMatrix@Camera@@QAEXAAUXMMATRIX@DirectX@@@Z)
+     1>App1.obj : error LNK2001: unresolved external symbol "public: void __thiscall Camera::Update(void)" (?Update@Camera@@QAEXXZ)
+     1>ColourShader.obj : error LNK2001: unresolved external symbol "protected: void __thiscall BaseShader::loadPixelShader(wchar_t *)" (?loadPixelShader@BaseShader@@IAEXPA_W@Z)
+     1>ColourShader.obj : error LNK2001: unresolved external symbol "protected: void __thiscall BaseShader::loadVertexShader(wchar_t *)" (?loadVertexShader@BaseShader@@IAEXPA_W@Z)
+     1>ColourShader.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall BaseShader::Render(struct ID3D11DeviceContext *,int)" (?Render@BaseShader@@UAEXPAUID3D11DeviceContext@@H@Z)
+     1>ColourShader.obj : error LNK2001: unresolved external symbol "public: __thiscall BaseShader::~BaseShader(void)" (??1BaseShader@@QAE@XZ)
+     1>ColourShader.obj : error LNK2001: unresolved external symbol "public: __thiscall BaseShader::BaseShader(struct ID3D11Device *,struct HWND__ *)" (??0BaseShader@@QAE@PAUID3D11Device@@PAUHWND__@@@Z)
+     1>Main.obj : error LNK2001: unresolved external symbol "public: void __thiscall System::Run(void)" (?Run@System@@QAEXXZ)
+     1>Main.obj : error LNK2001: unresolved external symbol "public: __thiscall System::~System(void)" (??1System@@QAE@XZ)
+     1>Main.obj : error LNK2001: unresolved external symbol "public: __thiscall System::System(class BaseApplication *)" (??0System@@QAE@PAVBaseApplication@@@Z)
+     1>\\vmwfil01\homedrives23$\p513692\Visual Studio 2013\Projects\Shaders\Release\E01_ColourShader.exe : fatal error LNK1120: 24 unresolved externals
+     1>Done Building Project "\\vmwfil01\homedrives23$\p513692\Visual Studio 2013\Projects\Shaders\E01_ColourShader\E01_ColourShader.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.74

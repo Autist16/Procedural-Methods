@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <FxCompile Include="shaders\depth_ps.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\depth_vs.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\terrain_ps.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\terrain_vs.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\colour_ps.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\colour_vs.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App1.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainMesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraControl.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PatternCreation.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ColourShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NoiseGeneration.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App1.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainMesh.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="cameraControl.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthShader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternCreation.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ColourShader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseGeneration.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{dfadb8ae-d9c3-4505-840a-3e7de596b139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{b096536d-5a4d-4a39-92e0-9987d6a4bbc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderFiles">
+      <UniqueIdentifier>{ce7d771c-59ae-46f3-b952-4e8ba2618450}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
