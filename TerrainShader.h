@@ -40,6 +40,7 @@ public:
 
 	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, Light *mainLight, ID3D11ShaderResourceView* texture[], float timeP);
 	void render(ID3D11DeviceContext* deviceContext, int indexCount);
+	void createRasterState(ID3D11Device* device, bool wire);
 private:
 	void initShader(WCHAR*, WCHAR*);
 	void loadVertexShader(WCHAR* filename);
@@ -52,6 +53,8 @@ private:
 
 	ID3D11SamplerState* sampleState;
 	ID3D11SamplerState* sampleStateClamp;
+
+	ID3D11RasterizerState* rasterState;
 };
 
 #endif

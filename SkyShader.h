@@ -1,7 +1,7 @@
 // Colour shader.h
 // Simple shader example.
-#ifndef _COLOURSHADER_H_
-#define _COLOURSHADER_H_
+#ifndef _SKYSHADER_H_
+#define _SKYSHADER_H_
 
 #include "../DXFramework/BaseShader.h"
 
@@ -9,7 +9,7 @@ using namespace std;
 using namespace DirectX;
 
 
-class ColourShader : public BaseShader
+class SkyShader : public BaseShader
 {
 	struct timeBufferType
 	{
@@ -18,10 +18,10 @@ class ColourShader : public BaseShader
 	};
 public:
 
-	ColourShader(ID3D11Device* device, HWND hwnd);
-	~ColourShader();
+	SkyShader(ID3D11Device* device, HWND hwnd);
+	~SkyShader();
 
-	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, ID3D11ShaderResourceView* texture, float time);
+	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, ID3D11ShaderResourceView* texture[], float time);
 	void render(ID3D11DeviceContext* deviceContext, int indexCount);
 
 private:

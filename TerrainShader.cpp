@@ -5,6 +5,7 @@
 TerrainShader::TerrainShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
 {
 	initShader(L"terrain_vs.cso", L"terrain_ps.cso");
+	createRasterState(device, false);
 }
 
 
@@ -182,7 +183,7 @@ void TerrainShader::setShaderParameters(ID3D11DeviceContext* deviceContext, cons
 
 
 	//pass textures to pixel shader
-	deviceContext->PSSetShaderResources(0, 6, texture);
+	deviceContext->PSSetShaderResources(0, 5, texture);
 
 }
 void TerrainShader::render(ID3D11DeviceContext* deviceContext, int indexCount)
@@ -190,8 +191,35 @@ void TerrainShader::render(ID3D11DeviceContext* deviceContext, int indexCount)
 	// Set the sampler state in the pixel shader.
 	deviceContext->PSSetSamplers(0, 1, &sampleState);
 	deviceContext->PSSetSamplers(1, 1, &sampleStateClamp);
+	deviceContext->RSSetState(rasterState);
 	// Base render function.
 	BaseShader::render(deviceContext, indexCount);
+}
+
+void TerrainShader::createRasterState(ID3D11Device* device, bool wire)
+{
+	D3D11_RASTERIZER_DESC rasterDesc;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	rasterDesc.DepthBias = 0;
+	rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.DepthClipEnable = true;
+	if (!wire)
+	{
+		rasterDesc.FillMode = D3D11_FILL_SOLID;
+	}
+	else
+	{
+		rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	}
+	rasterDesc.FrontCounterClockwise = true;
+	rasterDesc.MultisampleEnable = false;
+	rasterDesc.ScissorEnable = false;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+	rasterDesc.AntialiasedLineEnable = true;
+
+	// Create the rasterizer state from the description we just filled out.
+	device->CreateRasterizerState(&rasterDesc, &rasterState);
+
 }
 
 void TerrainShader::loadVertexShader(WCHAR* filename)

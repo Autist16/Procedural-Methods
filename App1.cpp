@@ -6,11 +6,17 @@ App1::App1()
 {
 	//BaseApplication::BaseApplication();
 	terrainShader = nullptr;
-	colourShader = nullptr;
+	skyShader = nullptr;
+	postShader = nullptr;
+
 	terrainMesh = nullptr;
 	skyMesh = nullptr;
+	orthoMesh = nullptr;
 
-	cameraController = nullptr;
+	postProcessTex = nullptr;
+
+	zoom = nullptr;
+	wire = nullptr;
 	patternGenerator = nullptr;
 }
 
@@ -20,20 +26,23 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	BaseApplication::init(hinstance, hwnd, screenWidth, screenHeight, in);
 
 	//set up inital camera positon
-	camera->setPosition(6, 10, 6);
-
+	camera->setPosition(6, -4, 6);
+	camBounds = XMFLOAT2(6, 20);
 	// Create Meshes
 	terrainMesh = new TerrainMesh(renderer->getDevice(), renderer->getDeviceContext(), res);
 	skyMesh = new Model(renderer->getDevice(), renderer->getDeviceContext(), "../res/mySphere.obj");
+	orthoMesh = new OrthoMesh(renderer->getDevice(), renderer->getDeviceContext(), screenWidth, screenHeight,0,0);
+	
 	//create control matrixs
-	terrainMatrix =XMMatrixScaling(0.4,0.4,0.4) * XMMatrixTranslation(-10,-30,-10);
-	skyMatrix = XMMatrixScaling(90, 60, 90)*XMMatrixTranslation(20,-20,30);
+	terrainMatrix = XMMatrixScaling(0.5f, 0.5f, 0.5f)*XMMatrixTranslation(-10,-16,-10);
+	
 	//create shaders
-	depthShader = new DepthShader(renderer->getDevice(), hwnd);
 	terrainShader = new TerrainShader(renderer->getDevice(), hwnd);
-	colourShader = new ColourShader(renderer->getDevice(), hwnd);
+	skyShader = new SkyShader(renderer->getDevice(), hwnd);
+	postShader = new PostProcessingShader(renderer->getDevice(), hwnd);
+
 	//render targets
-	depthMap = new RenderTexture(renderer->getDevice(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
+	postProcessTex = new RenderTexture(renderer->getDevice(), screenWidth*2, screenHeight*2, SCREEN_NEAR, SCREEN_DEPTH);
 	
 	textureLoading();
 	
@@ -49,8 +58,10 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	mainLight->generateProjectionMatrix(1.0f, 100.0f);
 
 	//controllers
-	cameraController = new CameraControl(res);
-
+	zoom = new bool(false);
+	wire = new bool(false);
+	scnHeight = screenHeight;
+	scnWidth = screenWidth;
 }
 
 
@@ -58,23 +69,33 @@ App1::~App1()
 {
 	// Run base application deconstructor
 	BaseApplication::~BaseApplication();
-	skyMatrix = XMMatrixTranslation(-camera->getPosition().x, -camera->getPosition().y, 0);
 	// Release the Direct3D object.
 	if (terrainMesh)
 	{
 		delete terrainMesh;
 		terrainMesh = 0;
 	}
+	if (skyMesh)
+	{
+		delete skyMesh;
+		skyMesh = 0;
+	}
 	if (terrainShader)
 	{
 		delete terrainShader;
 		terrainShader = 0;
 	}
-	if (cameraController)
+	if (skyShader)
 	{
-		delete cameraController;
-		cameraController = 0;
+		delete skyShader;
+		skyShader = 0;
 	}
+	if (postShader)
+	{
+		delete postShader;
+		postShader = 0;
+	}
+
 }
 
 bool App1::frame()
@@ -83,7 +104,7 @@ bool App1::frame()
 	processInput();
 	time += 0.025f;
 	result = BaseApplication::frame();
-	skyMatrix = XMMatrixTranslation(camera->getPosition().x, camera->getPosition().y-3, camera->getPosition().z);
+	skyMatrix = XMMatrixScaling(0.3f,0.25f,0.3f) * XMMatrixTranslation(camera->getPosition().x, camera->getPosition().y-0.65, camera->getPosition().z);
 	if (!result)
 	{
 		return false;
@@ -101,12 +122,11 @@ bool App1::frame()
 
 bool App1::render()
 {
-	
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	renderToTexture();
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoViewMatrix, orthoMatrix;
 
 	//// Clear the scene. (default blue colour)
 	renderer->beginScene(0.39f, 0.2f, 0.4f, 1.0f);
-	//renderer->setWireframeMode(true);
 	
 	//// Generate the view matrix based on the camera's position.
 	camera->update();
@@ -115,14 +135,17 @@ bool App1::render()
 	worldMatrix = renderer->getWorldMatrix();
 	viewMatrix = camera->getViewMatrix();
 	projectionMatrix = renderer->getProjectionMatrix();
-	renderer->setZBuffer(false);
 	
+	//sky box render
+	renderer->setZBuffer(false);
 	worldMatrix = skyMatrix;
 	skyMesh->sendData(renderer->getDeviceContext());
-	colourShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, skyTextures[0], time);
-	colourShader->render(renderer->getDeviceContext(), skyMesh->getIndexCount());
+	skyShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, skyTextures, time);
+	skyShader->render(renderer->getDeviceContext(), skyMesh->getIndexCount());
 	renderer->setZBuffer(true);
+	
 	//terrian
+	terrainShader->createRasterState(renderer->getDevice(), *wire);
 	worldMatrix = terrainMatrix;
 	terrainMesh->sendData(renderer->getDeviceContext());
 	//// Set shader parameters (matrices and texture)
@@ -130,9 +153,22 @@ bool App1::render()
 	//// Render object (combination of mesh geometry and shader process
 	terrainShader->render(renderer->getDeviceContext(), terrainMesh->getIndexCount());
 	
+	//reset world matrix
+	worldMatrix = renderer->getWorldMatrix();
 	
-	
-	
+	if (*zoom == true)
+	{
+		renderer->setZBuffer(false);
+		//render orthomesh
+		orthoMatrix = renderer->getOrthoMatrix();
+		orthoViewMatrix = camera->getOrthoViewMatrix();
+
+		orthoMesh->sendData(renderer->getDeviceContext());
+		postShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, orthoViewMatrix, orthoMatrix, postProcessTex->getShaderResourceView(), scnWidth, scnHeight);
+		postShader->render(renderer->getDeviceContext(), orthoMesh->getIndexCount());
+
+		renderer->setZBuffer(true);
+	}
 	// Render GUI
 	gui();
 
@@ -142,6 +178,43 @@ bool App1::render()
 	return true;
 }
 
+void App1::renderToTexture()
+{
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoViewMatrix, orthoMatrix;
+
+	//set render target to render to texture
+	postProcessTex->setRenderTarget(renderer->getDeviceContext());
+	//clear render to texture
+	postProcessTex->clearRenderTarget(renderer->getDeviceContext(), 0.0f, 0.1f, 0.1f, 1.0f);
+	//generate vewi matrix from camera pos
+	camera->update();
+
+	//get matrixs from camera and objects
+	worldMatrix = renderer->getWorldMatrix();
+	viewMatrix = camera->getViewMatrix();
+	projectionMatrix = renderer->getProjectionMatrix();
+	
+	//sky box render
+	renderer->setZBuffer(false);
+	worldMatrix = skyMatrix;
+	skyMesh->sendData(renderer->getDeviceContext());
+	skyShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, skyTextures, time);
+	skyShader->render(renderer->getDeviceContext(), skyMesh->getIndexCount());
+	renderer->setZBuffer(true);
+	
+	//terrian
+	worldMatrix = terrainMatrix;
+	terrainMesh->sendData(renderer->getDeviceContext());
+	//// Set shader parameters (matrices and texture)
+	terrainShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, mainLight, terrainTextures, time);
+	//// Render object (combination of mesh geometry and shader process
+	terrainShader->render(renderer->getDeviceContext(), terrainMesh->getIndexCount());
+
+	//reset world matrix
+	worldMatrix = renderer->getWorldMatrix();
+	//reset the render target to back buffer
+	renderer->setBackBufferRenderTarget();
+}
 void App1::gui()
 {
 	// Force turn off on Geometry shader
@@ -149,6 +222,8 @@ void App1::gui()
 
 	// Build UI
 	ImGui::Text("FPS: %.2f", timer->getFPS());
+	ImGui::Checkbox("Zoom", zoom);
+	ImGui::Checkbox("Wireframe Mode", wire);
 	// Render UI
 	ImGui::Render();
 }
@@ -176,20 +251,19 @@ void App1::textureLoading()
 	//load textures
 	textureMgr->loadTexture("grass", L"../res/grass.png");
 	textureMgr->loadTexture("rock1", L"../res/rock1.png");
-	textureMgr->loadTexture("rock2", L"../res/rock2.png");
 	textureMgr->loadTexture("water", L"../res/water.png");
-	textureMgr->loadTexture("hillside", L"../res/hillside.png");
-	textureMgr->loadTexture("cliff", L"../res/cliff.png");
+	textureMgr->loadTexture("standard", L"../res/hillside.png");
+	textureMgr->loadTexture("snow", L"../res/snow.png");
+
 	//set up texture array
 	terrainTextures[0] = textureMgr->getTexture("grass");
 	terrainTextures[1] = textureMgr->getTexture("rock1");
 	terrainTextures[2] = textureMgr->getTexture("water");
-	terrainTextures[3] = textureMgr->getTexture("hillside");
-	terrainTextures[4] = textureMgr->getTexture("cliff");
-	terrainTextures[5] = textureMgr->getTexture("rock2");
+	terrainTextures[3] = textureMgr->getTexture("standard");
+	terrainTextures[4] = textureMgr->getTexture("snow");
 
 	//// //// SKYBOX TEXTURES //// ////
-	patternGenerator = new PatternCreation(512);
+	patternGenerator = new PatternCreation(1024);
 	patternGenerator->CreateTexture(renderer->getDevice());
 	skyTextures[0] = patternGenerator->getCloudTexture(renderer->getDevice());
 	skyTextures[1] = patternGenerator->getDetailTexture(renderer->getDevice());

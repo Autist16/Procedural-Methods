@@ -1,5 +1,5 @@
 
-Texture2D shaderTexture[6] : register(t0);
+Texture2D shaderTexture[5] : register(t0);
 Texture2D depthMapTexture : register(t2);
 
 SamplerState SampleType : register(s0);
@@ -28,15 +28,15 @@ float4 main(InputType input) : SV_TARGET
 	float4 colour = ambient;
 
 	float3 lightDir;
-	float4 textureColor[6];
+	float4 textureColor[5];
 	float4 textureToUse[2];
 	float4 finalTexture;
 	float lightIntensity = 0.0f;
 
-	int nextArea = (int)input.area.y;
+	int nextArea = floor(input.area.y+0.2);
 	float blendVal = input.area.y - nextArea;
 	//get texture colours
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		textureColor[i] = shaderTexture[i].Sample(SampleType, input.tex);
 	}
@@ -61,90 +61,56 @@ float4 main(InputType input) : SV_TARGET
 	}
 
 	//check if within a particular area
-	int mainType = (int)input.area.x;
+	int mainType = floor(input.area.x + 0.5);
 	switch (mainType)
 	{
+		case 0: 
+		{
+			textureToUse[0] = textureColor[2]; //water
+			break; 
+		}
 		case 1 :
+		{
+			textureToUse[0] = textureColor[3]; //grass
+			break;
+		}
+		case 2:
 		{
 			textureToUse[0] = textureColor[0];
 			break;
 		}
-		case 2:
-		{
-			textureToUse[0] = textureColor[1];
-			break;
-		}
 		case 3:
 		{
-			textureToUse[0] = textureColor[2];
+			textureToUse[0] = textureColor[1]; //mountain
 			break;
 		}
-		default:
+		case 4:
 		{
-			textureToUse[0] = lerp(textureColor[0],textureColor[3],0.5);
+			textureToUse[0] = textureColor[4]; //snow
 			break;
 		}
 	}
-	
-	switch (nextArea)
-	{
-		case 1:
-		{
-			textureToUse[1] = textureColor[0];
-			break;
-		}
-		case 2:
-		{
-			textureToUse[1] = textureColor[1];
-			break;
-		}
-		case 3:
-		{
-			textureToUse[1] = textureColor[2];
-			break;
-		}
-		default:
-		{
-			textureToUse[1] = textureColor[3];
-			break;
-		}
-	}
-	float4 tempTex= lerp(textureToUse[0], textureToUse[1], blendVal);
-	
 
-	//fine detail
-	if (mainType == 0)
+	float4 tempTex = textureToUse[0];
+
+	//area blending
+	if (mainType == 3 && nextArea != 4)
 	{
-		if (input.normal.y < 0.3)
+		if (input.normal.y > 0.65)
 		{
-			finalTexture = textureColor[4];
-		}
-		else
-		{
-			finalTexture = lerp(tempTex, textureColor[4], 1 - input.normal.y);
+			tempTex = lerp(textureToUse[0], textureColor[0], input.normal.y);
 		}
 	}
-	else if (mainType == 3 && nextArea != 3)
+	else if (mainType == 0 && input.normal.y <= 0.3)
 	{
-		if (input.normal.y < 0.15)
-		{
-			finalTexture = textureColor[4];
-		}
-		else
-		{
-			finalTexture = tempTex;
-		}
-	}
-	else if (mainType == 2)
-	{
-		finalTexture = lerp(tempTex, textureColor[5], 1- input.normal.y);
+		tempTex = textureColor[3];
 	}
 	else
 	{
-		finalTexture = lerp(tempTex, textureColor[4], 1 - input.normal.y);
+		tempTex = lerp(textureToUse[0], textureColor[0], blendVal);
 	}
 	
-	colour = colour * finalTexture;
+	colour = colour * tempTex;
 	colour = saturate(colour);
 	return colour;
 }

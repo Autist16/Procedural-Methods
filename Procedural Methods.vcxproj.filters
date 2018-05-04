@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="shaders\depth_ps.hlsl">
-      <Filter>ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\depth_vs.hlsl">
-      <Filter>ShaderFiles</Filter>
-    </FxCompile>
     <FxCompile Include="shaders\terrain_ps.hlsl">
       <Filter>ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="shaders\terrain_vs.hlsl">
       <Filter>ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\colour_ps.hlsl">
+    <FxCompile Include="shaders\post_ps.hlsl">
       <Filter>ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\colour_vs.hlsl">
+    <FxCompile Include="shaders\post_vs.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\sky_ps.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\sky_vs.hlsl">
       <Filter>ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
@@ -30,22 +30,16 @@
     <ClCompile Include="TerrainMesh.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="CameraControl.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthShader.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="TerrainShader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="PatternCreation.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="ColourShader.cpp">
+    <ClCompile Include="PostProcessing.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="NoiseGeneration.cpp">
+    <ClCompile Include="SkyShader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,22 +50,16 @@
     <ClInclude Include="TerrainMesh.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="cameraControl.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthShader.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainShader.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="PatternCreation.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="ColourShader.h">
+    <ClInclude Include="PostProcessing.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="NoiseGeneration.h">
+    <ClInclude Include="SkyShader.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

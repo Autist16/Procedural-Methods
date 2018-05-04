@@ -1,5 +1,15 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (E01_ColourShader.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  App1.cpp
-c:\users\lindsey.lindseyuni\documents\uni year 3\semester 2\procedrual methods\oldframework\shadersframework(1) (1)\shaders\procedural methods\app1.cpp(29): warning C4305: 'argument': truncation from 'double' to 'float'
+  compilation object save succeeded; see C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\sky_ps.cso
+  compilation object save succeeded; see C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\sky_vs.cso
+C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\shaders\post_ps.hlsl(22,19-25): warning X3081: comma expression used where a vector constructor may have been intended
+C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\shaders\post_ps.hlsl(22,19-29): warning X3081: comma expression used where a vector constructor may have been intended
+C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\shaders\post_ps.hlsl(22,19-34): warning X3081: comma expression used where a vector constructor may have been intended
+  
+  compilation object save succeeded; see C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\post_ps.cso
+  compilation object save succeeded; see C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\post_vs.cso
+C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\shaders\terrain_ps.hlsl(41,21-36): warning X3550: sampler array index must be a literal expression, forcing loop to unroll
+  
+  compilation object save succeeded; see C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\terrain_ps.cso
+  compilation object save succeeded; see C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Procedural Methods\terrain_vs.cso
   Procedural Methods.vcxproj -> C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Debug\Procedural Methods.exe
   Procedural Methods.vcxproj -> C:\Users\Lindsey.LindseyUni\Documents\Uni Year 3\Semester 2\procedrual methods\oldFramework\ShadersFramework(1) (1)\Shaders\Debug\Procedural Methods.pdb (Full PDB)

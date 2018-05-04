@@ -13,8 +13,8 @@ PatternCreation::PatternCreation(int res)
 	{
 		float v = (rand() % 10)-4;
 		seedValues2[i].x = (float)v/10;// seed values for pattern 1
-		float w = (rand() % 10)-2;
-		seedValues2[i].y = (float)w/10;// / 10; // seed values for pattern 2
+		float w = (rand() %14)-4;
+		seedValues2[i].y = w/ 10; // seed values for pattern 2
 	}
 
 	//create storage for texture
@@ -40,9 +40,8 @@ PatternCreation::~PatternCreation()
 }
 void PatternCreation::CreateTexture(ID3D11Device* device)
 {
-	D3D11_TEXTURE2D_DESC cloudTextureDesc;
-	D3D11_SUBRESOURCE_DATA cloudTextureData;
-	D3D11_SUBRESOURCE_DATA detailTextureData;
+	D3D11_TEXTURE2D_DESC cloudTextureDesc; // this desc can be reused for both texturess
+	D3D11_SUBRESOURCE_DATA cloudTextureData, detailTextureData;
 
 	//pass data to texture creator
 	cloudTextureData.pSysMem = (XMFLOAT4*)cloudPattern;
@@ -54,8 +53,8 @@ void PatternCreation::CreateTexture(ID3D11Device* device)
 	detailTextureData.SysMemSlicePitch = 0;
 
 	//create texture2d desc
-	cloudTextureDesc.Width = resolution;
-	cloudTextureDesc.Height = resolution;
+	cloudTextureDesc.Width = resolution;			// width = height to match noise generation
+	cloudTextureDesc.Height = resolution;			// to prevent stretching or warpping at this inital stage
 	cloudTextureDesc.MipLevels = 1;
 	cloudTextureDesc.ArraySize = 1;
 	cloudTextureDesc.SampleDesc.Count = 1;
@@ -102,8 +101,8 @@ void PatternCreation::noiseCreation()
 		for (int j = 0; j < resolution; j++)
 		{
 			noiseIndex = (i*resolution + j);
-			colourVal[0] = noiseOutput2D[noiseIndex];
-			colourVal[1] = detailOutput2D[noiseIndex]*0.75;
+			colourVal[0] = noiseOutput2D[noiseIndex]*1.5;
+			colourVal[1] = detailOutput2D[noiseIndex];
 			//lock values in valid range for colour in shaders
 			for (int i = 0; i < 2; i++)
 			{
@@ -116,7 +115,6 @@ void PatternCreation::noiseCreation()
 				{
 					colourVal[i] = 1.0f;
 				}
-				
 			}
 			
 			//apply to patterns for textures
@@ -153,27 +151,29 @@ void PatternCreation::noise2D()
 				int nPitch = height >> oc;
 				int nSampleX1 = (x / nPitch)*nPitch;
 				int nSampleY1 = (y / nPitch)*nPitch;
+				
+				//wrap round and tesselate
+				int nSampleX2 = (nSampleX1 + nPitch) % width; 
+				int nSampleY2 = (nSampleY1 + nPitch) % height;
 
-				int nSampleX2 = (nSampleX1 + nPitch) % width; //wrap round and tesselate
-				int nSampleY2 = (nSampleY1 + nPitch) % height; //wrap round and tesselate
+				float BlendX = (float(x - nSampleX1) / (float)nPitch); //how far into pitch
+				float BlendY = (float(y - nSampleY1) / (float)nPitch);
 
-				float fBlendX = (float(x - nSampleX1) / (float)nPitch); //how far into pitch
-				float fBlendY = (float(y - nSampleY1) / (float)nPitch); //how far into pitch
+				//interpolate between values
+				float fSampleT = (1.0f - BlendX)*seedValues2[nSampleY1*width + nSampleX1].x + BlendX*seedValues2[nSampleY1*width + nSampleX2].x;
+				float fSampleB = (1.0f - BlendX)*seedValues2[nSampleY2*width + nSampleX1].x + BlendX*seedValues2[nSampleY2*width + nSampleX2].x;
 
-																		//interpolate between values
-				float fSampleT = (1.0f - fBlendX)*seedValues2[nSampleY1*width + nSampleX1].x + fBlendX*seedValues2[nSampleY1*width + nSampleX2].x;
-				float fSampleB = (1.0f - fBlendX)*seedValues2[nSampleY2*width + nSampleX1].x + fBlendX*seedValues2[nSampleY2*width + nSampleX2].x;
-
-				float dSampleT = (1.0f - fBlendX)*seedValues2[nSampleY1*width + nSampleX1].y + fBlendX*seedValues2[nSampleY1*width + nSampleX2].y;
-				float dSampleB = (1.0f - fBlendX)*seedValues2[nSampleY2*width + nSampleX1].y + fBlendX*seedValues2[nSampleY2*width + nSampleX2].y;
+				float dSampleT = (1.0f - BlendX)*seedValues2[nSampleY1*width + nSampleX1].y + BlendX*seedValues2[nSampleY1*width + nSampleX2].y;
+				float dSampleB = (1.0f - BlendX)*seedValues2[nSampleY2*width + nSampleX1].y + BlendX*seedValues2[nSampleY2*width + nSampleX2].y;
 
 
 				//update values
-				noiseVal += (fBlendY *(fSampleB - fSampleT) + fSampleT)* scalingVal;
-				detailVal += (fBlendY *(dSampleB - dSampleT) + dSampleT)* scalingVal;
+				noiseVal += (BlendY *(fSampleB - fSampleT) + fSampleT)* scalingVal;
+				detailVal += (BlendY *(dSampleB - dSampleT) + dSampleT)* scalingVal;
 				scaleAcu += scalingVal;
 				scalingVal /= 2;
 			}
+			//scale and store result
 			//int i = y*width*x;
 			noiseOutput2D[y * width + x] = noiseVal/scaleAcu;
 			detailOutput2D[y*width + x] = detailVal/scaleAcu;

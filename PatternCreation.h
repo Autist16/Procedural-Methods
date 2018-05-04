@@ -39,3 +39,5 @@ protected:
 #endif // ! _PATTERNCREATION_H_
 
 
+//noise creation algorithm taken from
+// https://www.youtube.com/watch?v=6-0UaeJBumA 

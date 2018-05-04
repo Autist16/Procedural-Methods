@@ -86,22 +86,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App1.cpp" />
-    <ClCompile Include="CameraControl.cpp" />
-    <ClCompile Include="ColourShader.cpp" />
-    <ClCompile Include="DepthShader.cpp" />
+    <ClCompile Include="SkyShader.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="NoiseGeneration.cpp" />
     <ClCompile Include="PatternCreation.cpp" />
+    <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="TerrainMesh.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App1.h" />
-    <ClInclude Include="cameraControl.h" />
-    <ClInclude Include="ColourShader.h" />
-    <ClInclude Include="DepthShader.h" />
-    <ClInclude Include="NoiseGeneration.h" />
+    <ClInclude Include="SkyShader.h" />
     <ClInclude Include="PatternCreation.h" />
+    <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="TerrainMesh.h" />
     <ClInclude Include="TerrainShader.h" />
   </ItemGroup>
@@ -111,19 +107,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\colour_ps.hlsl">
+    <FxCompile Include="shaders\sky_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="shaders\colour_vs.hlsl">
+    <FxCompile Include="shaders\sky_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="shaders\depth_ps.hlsl">
+    <FxCompile Include="shaders\post_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="shaders\depth_vs.hlsl">
+    <FxCompile Include="shaders\post_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="shaders\terrain_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

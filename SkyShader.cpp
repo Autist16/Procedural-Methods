@@ -1,15 +1,15 @@
 // texture shader.cpp
-#include "colourshader.h"
+#include "SkyShader.h"
 
 
-ColourShader::ColourShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
+SkyShader::SkyShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
 {
 	createRasterState(device);
-	initShader(L"colour_vs.cso", L"colour_ps.cso");
+	initShader(L"sky_vs.cso", L"sky_ps.cso");
 }
 
 
-ColourShader::~ColourShader()
+SkyShader::~SkyShader()
 {
 	// Release the matrix constant buffer.
 	if (matrixBuffer)
@@ -30,10 +30,13 @@ ColourShader::~ColourShader()
 }
 
 
-void ColourShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
+void SkyShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 {
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_BUFFER_DESC timeBufferDesc;
+
+	D3D11_SAMPLER_DESC samplerDesc;
+
 
 	// Load (+ compile) shader files
 	loadVertexShader(vsFilename);
@@ -58,10 +61,28 @@ void ColourShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	timeBufferDesc.StructureByteStride = 0;
 
 	renderer->CreateBuffer(&timeBufferDesc, NULL, &timeBuffer);
+
+	//Sampler descriptions
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	// Create the texture sampler state.
+	renderer->CreateSamplerState(&samplerDesc, &sampleState);
+
 }
 
 
-void ColourShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, ID3D11ShaderResourceView* texture, float t)
+void SkyShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, ID3D11ShaderResourceView* texture[], float t)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -100,9 +121,9 @@ void ColourShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const
 	bufferNumber = 1;
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &timeBuffer);
 
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, 2, texture);
 }
-void ColourShader::render(ID3D11DeviceContext* deviceContext, int indexCount)
+void SkyShader::render(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// Set the sampler state in the pixel shader.
 	deviceContext->PSSetSamplers(0, 1, &sampleState);
@@ -111,7 +132,7 @@ void ColourShader::render(ID3D11DeviceContext* deviceContext, int indexCount)
 	BaseShader::render(deviceContext, indexCount);
 }
 
-void ColourShader::createRasterState(ID3D11Device* device)
+void SkyShader::createRasterState(ID3D11Device* device)
 {
 	D3D11_RASTERIZER_DESC rasterDesc;
 	rasterDesc.CullMode = D3D11_CULL_NONE;
